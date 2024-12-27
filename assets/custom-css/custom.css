@@ -1,0 +1,136 @@
+input[type='checkbox'] {
+  cursor: pointer;
+}
+
+.link {
+  cursor: pointer;
+  color: #364574;
+}
+.link:hover,
+a:hover {
+  color: #2385ba;
+}
+
+.navbar-menu .navbar-nav .nav-link {
+  font-size: inherit;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.table {
+  width: 100% !important;
+}
+
+.sales-new-icon {
+  position: fixed;
+  bottom: 70px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.dtr-details {
+  width: 100% !important;
+}
+
+.dtr-data,
+.dtr-title {
+  width: 50% !important;
+}
+
+table.dataTable > tbody > tr.child ul.dtr-details > li {
+  border: none;
+}
+
+.dataTables_info {
+  text-transform: uppercase;
+  font-size: 11px;
+}
+
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 99;
+}
+
+.show-xs {
+  display: none;
+}
+
+@media (max-width: 481px) {
+  body {
+    font-size: 0.75rem;
+  }
+
+  .show-xs {
+    display: block !important;
+  }
+
+  .hide-xs,
+  .dtr-title {
+    display: none !important;
+  }
+
+  .col-lg-12,
+  .max-xs {
+    padding: 0 !important;
+  }
+
+  .dataTables_filter {
+    text-align: left !important;
+    padding-left: 15px !important;
+  }
+
+  .dataTables_length,
+  .dataTables_info {
+    display: none;
+  }
+
+  .dataTables_paginate {
+    float: left !important;
+    margin-top: 25px !important;
+    padding-left: 12px !important;
+  }
+
+  .dataTables_wrapper .col-md-7,
+  .dataTables_wrapper .col-md-6 {
+    padding-left: 0px !important;
+  }
+
+  .project-stat-title {
+    float: right;
+    font-size: 11px;
+  }
+
+  .project-stat-box {
+    padding-top: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  #datatable_filter {
+    text-align: left !important;
+  }
+
+  #datatable_length,
+  #datatable_info {
+    display: none;
+  }
+
+  .dataTables_paginate {
+    float: left !important;
+    margin-top: 25px !important;
+  }
+
+  #datatable_wrapper .col-md-7,
+  #datatable_wrapper .col-md-6 {
+    padding-left: 0px !important;
+  }
+}
+
+[data-layout='vertical'][data-sidebar-size='sm'] {
+  @media (min-width: 768px) {
+    min-height: 100vh !important;
+  }
+}
