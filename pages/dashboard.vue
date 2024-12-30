@@ -1,0 +1,27 @@
+<script setup lang="ts">
+    definePageMeta({
+        name: 'Dashboard'
+    })
+</script>
+<template>
+  <div class="card">
+    <div class="card-body"></div>
+    <span class="badge bg-success-subtle text-success">halo</span>
+    <div>hai</div>
+    <div class="dropdown">
+      <button
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        Dropdown button
+      </button>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Action</a></li>
+        <li><a class="dropdown-item" href="#">Another action</a></li>
+        <li><a class="dropdown-item" href="#">Something else here</a></li>
+      </ul>
+    </div>
+  </div>
+</template>

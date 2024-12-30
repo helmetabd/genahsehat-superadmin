@@ -9,6 +9,7 @@
 @import './default/variables-dark';
 @import './default/variables-custom';
 @import 'bootstrap/scss/mixins';
+@import '../components/utilities';
 @import 'bootstrap/scss/bootstrap';
 // @use './default';
 // @use './bootstrap/index';
@@ -25,7 +26,7 @@
 @import '../structure/layouts';
 
 // Components
-@import '../components/utilities';
+// @import '../components/utilities';
 @import '../components/waves';
 @import '../components/avatar';
 @import '../components/accordion';
