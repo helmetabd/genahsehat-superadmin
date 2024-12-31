@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MainLayout from "./MainLayout.vue";
 import simplebar from "simplebar-vue";
 // console.log(document.querySelector("html"))
 
@@ -85,86 +84,85 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <MainLayout>
-    <div id="layout-wrapper">
-      <Navbar />
-      <div>
-        <!-- ========== Left Sidebar Start ========== -->
-        <!-- ========== App Menu ========== -->
-        <div class="app-menu navbar-menu">
-          <!-- LOGO -->
-          <div class="navbar-brand-box">
-            <!-- Dark Logo-->
-            <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-dark">
-              <span class="logo-sm">
-                <img
-                  src="../assets/images/logo-light.png"
-                  alt=""
-                  class="rounded-circle"
-                  height="40"
-                />
-              </span>
-              <span class="logo-lg">
-                <img
-                  src="../assets/images/logo-light.png"
-                  alt=""
-                  class="rounded-circle"
-                  height="70"
-                />
-              </span>
-            </NuxtLink>
-            <!-- Light Logo-->
-            <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-light">
-              <span class="logo-sm">
-                <img
-                  src="../assets/images/logo-dark.png"
-                  alt=""
-                  class="rounded-circle"
-                  height="40"
-                />
-              </span>
-              <span class="logo-lg">
-                <img
-                  src="../assets/images/logo-dark.png"
-                  alt=""
-                  class="rounded-circle"
-                  height="70"
-                />
-              </span>
-            </NuxtLink>
-            <button
-              type="button"
-              class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
-              id="vertical-hover"
-              @click="initActiveMenu"
-            >
-              <i class="ri-record-circle-line"></i>
-            </button>
-          </div>
-
-          <simplebar id="scrollbar" class="h-100" ref="scrollbar">
-            <MenuComponent />
-          </simplebar>
-          <div class="sidebar-background"></div>
+  <div id="layout-wrapper">
+    <Navbar />
+    <div>
+      <!-- ========== Left Sidebar Start ========== -->
+      <!-- ========== App Menu ========== -->
+      <div class="app-menu navbar-menu">
+        <!-- LOGO -->
+        <div class="navbar-brand-box">
+          <!-- Dark Logo-->
+          <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-dark">
+            <span class="logo-sm">
+              <img
+                src="../assets/images/logo-light.png"
+                alt=""
+                class="rounded-circle"
+                height="40"
+              />
+            </span>
+            <span class="logo-lg">
+              <img
+                src="../assets/images/logo-light.png"
+                alt=""
+                class="rounded-circle"
+                height="70"
+              />
+            </span>
+          </NuxtLink>
+          <!-- Light Logo-->
+          <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-light">
+            <span class="logo-sm">
+              <img
+                src="../assets/images/logo-dark.png"
+                alt=""
+                class="rounded-circle"
+                height="40"
+              />
+            </span>
+            <span class="logo-lg">
+              <img
+                src="../assets/images/logo-dark.png"
+                alt=""
+                class="rounded-circle"
+                height="70"
+              />
+            </span>
+          </NuxtLink>
+          <button
+            type="button"
+            class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
+            id="vertical-hover"
+            @click="initActiveMenu"
+          >
+            <i class="ri-record-circle-line"></i>
+          </button>
         </div>
-        <!-- Left Sidebar End -->
-        <!-- Vertical Overlay-->
-        <div class="vertical-overlay" id="overlay"></div>
-      </div>
-      <!-- ============================================================== -->
-      <!-- Start Page Content here -->
-      <!-- ============================================================== -->
 
-      <div class="main-content">
-        <div class="page-content">
-          <!-- Start Content-->
-          <div class="container-fluid">
-            <slot />
-          </div>
-        </div>
-        <FooterComponent />
+        <simplebar id="scrollbar" class="h-100" ref="scrollbar">
+          <MenuComponent />
+        </simplebar>
+        <div class="sidebar-background"></div>
       </div>
-      <Rightbar />
+      <!-- Left Sidebar End -->
+      <!-- Vertical Overlay-->
+      <div class="vertical-overlay" id="overlay"></div>
     </div>
-  </MainLayout>
+    <!-- ============================================================== -->
+    <!-- Start Page Content here -->
+    <!-- ============================================================== -->
+
+    <div class="main-content">
+      <div class="page-content">
+        <!-- Start Content-->
+        <div class="container-fluid">
+          <PageHeader />
+          <slot />
+        </div>
+      </div>
+      <FooterComponent />
+    </div>
+    <Rightbar />
+  </div>
 </template>

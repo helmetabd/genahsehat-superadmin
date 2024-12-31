@@ -1,13 +1,14 @@
 <script setup lang="ts">
     definePageMeta({
-        name: 'Dashboard'
+        name: 'Dashboard',
+        alias: ['/', '/dashboard']
     })
 </script>
 <template>
   <div class="card">
     <div class="card-body"></div>
     <span class="badge bg-success-subtle text-success">halo</span>
-    <div>hai</div>
+    <div>Dashboard</div>
     <div class="dropdown">
       <button
         class="btn btn-secondary dropdown-toggle"

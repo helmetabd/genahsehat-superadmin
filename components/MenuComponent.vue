@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
 import menu from "../config/menu";
-import { onMounted, reactive, watch } from "vue";
-import { useRoute } from "vue-router";
-import { useAuthStore } from "@/stores/auth";
 
 const authStore = useAuthStore();
 const layoutStore = useLayoutStore();
@@ -50,35 +46,30 @@ function checkAuth(req: string) {
   return checker.length > 0 ? true : false;
 }
 
-function onRoutechange() {
-  setTimeout(() => {
-    var currentPath = window.location.pathname;
-    if (document.querySelector("#navbar-nav")) {
-      let currentPosition = (
-        document
-          .querySelector("#navbar-nav")
-          ?.querySelector('[href="' + currentPath + '"]') as HTMLElement
-      )?.offsetTop;
-      if (currentPosition > document.documentElement.clientHeight) {
-        document.querySelector("#scrollbar .simplebar-content-wrapper")
-          ? ((
-              document.querySelector(
-                "#scrollbar .simplebar-content-wrapper"
-              ) as HTMLElement
-            ).scrollTop = currentPosition + 300)
-          : "";
-      }
+function onRoutechange(ele: string) {
+  initActiveMenu(ele);
+  if (document.getElementsByClassName("mm-active").length > 0) {
+    const currentPosition = (
+      document.getElementsByClassName("mm-active")[0] as HTMLElement
+    ).offsetTop;
+    if (currentPosition > 500) {
+      document.querySelector("#scrollbar .simplebar-content-wrapper")
+        ? ((
+            document.querySelector(
+              "#scrollbar .simplebar-content-wrapper"
+            ) as HTMLElement
+          ).scrollTop = currentPosition + 300)
+        : "";
     }
-  }, 500);
+  }
 }
 
-function initActiveMenu() {
+function initActiveMenu(path: string) {
   setTimeout(() => {
-    var currentPath = window.location.pathname;
     if (document.querySelector("#navbar-nav")) {
       let a = document
         .querySelector("#navbar-nav")
-        ?.querySelector('[href="' + currentPath + '"]');
+        ?.querySelector('[href="' + path + '"]');
       if (a) {
         a.classList.add("active");
         let parentCollapseDiv = a.closest(".collapse.menu-dropdown");
@@ -121,8 +112,6 @@ function initActiveMenu() {
 }
 
 onMounted(() => {
-  initActiveMenu();
-  onRoutechange();
   if (document.querySelectorAll(".navbar-nav .collapse")) {
     let collapses = document.querySelectorAll(".navbar-nav .collapse");
 
@@ -205,15 +194,15 @@ onMounted(() => {
   }
 });
 
-// watch(
-//   () => router.path,
-//   (newVal, oldVal) => {
-//     if (newVal !== oldVal) {
-//       onRoutechange(router);
-//     }
-//   },
-//   { immediate: true, deep: true }
-// );
+watch(
+  () => router.path,
+  (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      onRoutechange(router.path);
+    }
+  },
+  { immediate: true, deep: true }
+);
 </script>
 
 <template>

@@ -5,9 +5,12 @@
 //Core files
 @import 'bootstrap/scss/functions';
 @import 'bootstrap/scss/variables';
-@import './default/variables';
-@import './default/variables-dark';
-@import './default/variables-custom';
+@import './galaxy/variables';
+@import './galaxy/variables-dark';
+@import './galaxy/variables-custom';
+// @import './default/variables';
+// @import './default/variables-dark';
+// @import './default/variables-custom';
 @import 'bootstrap/scss/mixins';
 @import '../components/utilities';
 @import 'bootstrap/scss/bootstrap';
@@ -115,6 +118,7 @@
 @import '../pages/nft-landing';
 @import '../pages/file-manager';
 @import '../pages/to-do';
+@import '../pages/galaxy';
 @import '../pages/jobs';
 @import '../pages/job-landing';
 
