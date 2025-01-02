@@ -1,34 +1,68 @@
 <script setup lang="ts">
+import type { User } from "~/interfaces/user";
+import { useFetchApi } from "~/composables/useFetchApi";
+
 definePageMeta({
   name: "User List",
 });
+const columns = [
+  {
+    name: "id",
+    label: "ID",
+    sortable: true,
+    filterable: true,
+  },
+  {
+    name: "displayName",
+    label: "Name",
+    sortable: true,
+    filterable: true,
+  },
+  {
+    name: "email",
+    label: "Email",
+    sortable: true,
+    filterable: true,
+  },
+  {
+    name: "phone",
+    label: "Phone",
+    sortable: true,
+    filterable: true,
+  },
+  {
+    name: "role",
+    label: "Role",
+    sortable: true,
+    filterable: true,
+  },
+];
+const { data } = await useFetchApi("/users", { method: "GET" });
+const datas = data.value as { data: User[], message: string, statusCode: number };
+const users: User[] = datas.data;
+console.log(users);
+console.log("data");
 </script>
 <template>
-  <div class="card">
-    <div class="card-body"></div>
-    <span class="badge bg-success-subtle text-success">table</span>
-    <div style="height: 10px; width: 50px" class="color_1"></div>
-    <div style="height: 10px; width: 50px" class="color_2"></div>
-    <div style="height: 10px; width: 50px" class="color_3"></div>
-    <div style="height: 10px; width: 50px" class="color_4"></div>
-    <div style="height: 10px; width: 50px" class="color_5"></div>
-    <div style="height: 10px; width: 50px" class="color_6"></div>
-    <div style="height: 10px; width: 50px" class="color_7"></div>
-    <div style="height: 10px; width: 50px" class="color_8"></div>
-    <div style="height: 10px; width: 50px" class="color_9"></div>
-    <table>
-      <thead>
-        <tr>
-          <th>bismillah</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>sip</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <CardsBaseCard>
+    <template #cardBody>
+      <span class="badge bg-success-subtle text-success">table</span>
+      <div style="height: 10px; width: 50px" class="color_1"></div>
+      <div style="height: 10px; width: 50px" class="color_2"></div>
+      <div style="height: 10px; width: 50px" class="color_3"></div>
+      <div style="height: 10px; width: 50px" class="color_4"></div>
+      <div style="height: 10px; width: 50px" class="color_5"></div>
+      <div style="height: 10px; width: 50px" class="color_6"></div>
+      <div style="height: 10px; width: 50px" class="color_7"></div>
+      <div style="height: 10px; width: 50px" class="color_8"></div>
+      <div style="height: 10px; width: 50px" class="color_9"></div>
+      <DatatablesDatatableClient
+        v-if="data"
+        :data-table="users"
+        :column="columns"
+      ></DatatablesDatatableClient>
+    </template>
+  </CardsBaseCard>
 </template>
 
 <style lang="scss">

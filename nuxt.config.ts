@@ -3,6 +3,12 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
   css: ["~/assets/scss/config/app.scss"],
+  runtimeConfig: {
+    public: {
+      backendUrl: process.env.NUXT_PUBLIC_BACKEND_URL
+    },
+    apiKey: process.env.NUXT_API_KEY,
+  },
   vite: {
     css: {
       preprocessorOptions: {
@@ -12,5 +18,5 @@ export default defineNuxtConfig({
       },
     },
   },
-  modules: ["@pinia/nuxt", "pinia-plugin-persistedstate/nuxt"],
+  modules: ["@pinia/nuxt", "pinia-plugin-persistedstate/nuxt", "nuxt-particles"],
 });

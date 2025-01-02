@@ -1,7 +1,5 @@
 <script setup>
-import { checkShipmentService } from '@/service'
-import { watchEffect } from 'vue'
-import { reactive, ref } from 'vue'
+// import { checkShipmentService } from '@/service'
 
 const props = defineProps({
   title: {
@@ -51,7 +49,7 @@ const fetchData = async () => {
   state.loading = true
   state.error = null
   try {
-    const response = await checkShipmentService.check(props.fetchParams.param)
+    // const response = await checkShipmentService.check(props.fetchParams.param)
     state.data = response
   } catch (err) {
     state.error = 'Failed to fetch data'

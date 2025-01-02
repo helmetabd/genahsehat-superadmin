@@ -1,6 +1,6 @@
 <script setup>
 import { getAvatar } from '../../utils/assetsHelper'
-import PercentageBadge from './percentage-badge.vue'
+import PercentageBadge from './PercentageBadge.vue'
 import { defineProps } from 'vue'
 
 defineProps({

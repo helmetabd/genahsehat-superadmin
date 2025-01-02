@@ -1,10 +1,5 @@
 <script setup lang="ts">
-const layoutStore = useLayoutStore();
 const router = useRoute();
-// mounted() {
-//   // document.querySelector("html").setAttribute('dir', 'rtl');
-// }
-// console.log(router.meta)
 </script>
 
 <template>
@@ -23,6 +18,5 @@ const router = useRoute();
         </div>
       </div>
     </div>
-    <slot />
   </div>
 </template>

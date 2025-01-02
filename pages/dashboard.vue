@@ -3,6 +3,7 @@
         name: 'Dashboard',
         alias: ['/', '/dashboard']
     })
+    // console.log(useNuxtApp().$authApi)
 </script>
 <template>
   <div class="card">

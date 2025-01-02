@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import image from '../../assets/images/arjuna-sm.png'
-import { getAvatar } from '../../utils/assetsHelper'
-defineProps(['collections', 'link', 'route', 'collectionTitle'])
+const props = defineProps(['collections', 'link', 'route', 'collectionTitle'])
 
 const defaultAvatar = ref(image)
 
