@@ -10,7 +10,12 @@ export const useFetchApi: UseFetchType = (path, options = {}) => {
     Authorization: `Bearer ${useAuthStore().token}`,
   };
   options.onResponse = ({ response }) => {
-    return response._data as { data: any | any[], message: string, statusCode: number };
+    console.log("Response received:", response);
+    const responseData = response._data as { data: any | any[], message: string, statusCode: number };
+    return responseData;
+  }
+  options.onRequest = ({ options }) => {
+    console.log("Request made:", options);
   }
   return useFetch(path, options);
 };

@@ -13,3 +13,9 @@ import type { LayoutKey } from '#build/types/layouts';
     </ClientOnly>
   </div>
 </template>
+<style>
+@import './assets/custom-css/dataTables.bootstrap5.min.css';
+@import './assets/custom-css/responsive.bootstrap.min.css';
+@import './assets/custom-css/buttons.dataTables.min.css';
+@import './assets/custom-css/buttons.bootstrap5.min.css';
+</style>

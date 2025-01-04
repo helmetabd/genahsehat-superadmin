@@ -1,60 +1,54 @@
-// export default defineNuxtPlugin({
-//   setup() {
-//     const authStore = useAuthStore();
-//     const refreshTokenCookie = useCookie("refreshToken");
+import Swal from "sweetalert2";
 
-//     // Create a custom ofetch instance
-//     const authApi = $fetch.create({
-//       baseURL: useRuntimeConfig().public.backendUrl,
-//       retry: 1, // Optional retry logic
-//       headers: {
-//         Accept: "application/json",
-//         "Content-Type": "application/json",
-//         "X-Api-Key": useRuntimeConfig().apiKey,
-//       },
-//       onRequest({ options }) {
-//         // Log requests or modify them
-//         console.log("Request made:", options);
-//       },
-//       async onRequestError({ request, options, error }) {
-//         console.log("[fetch request error]", request, error);
-//         return Promise.reject(error);
-//       },
-//       async onResponse({ request, response, options }) {
-//         // Log responses or process them
-//         console.log("Response received:", response);
-//       },
-//       async onResponseError({ request, options, response }) {
-//         // Handle 401 errors with token refresh
-//         // if (response.status === 401) {
-//         //   try {
-//         //     await refreshAccessToken(authStore, refreshTokenCookie);
-//         //     // Retry the failed request with the new token
-//         //     const retryResponse = await $fetch.raw(response.url, {
-//         //       ...response.options,
-//         //       headers: {
-//         //         ...response.options?.headers,
-//         //         Authorization: `Bearer ${authStore.token}`,
-//         //       },
-//         //     });
-//         //     return retryResponse;
-//         //   } catch {
-//         //     // Clear auth if refresh fails
-//         //     authStore.clearAuth();
-//         //     return navigateTo("/auth/login");
-//         //   }
-//         // }
-//         // Handle other errors
-//         console.error("Error response:", response);
-//         throw response;
-//       },
-//     });
+export default defineNuxtPlugin((nuxtApp) => {
+  const { session } = useUserSession();
 
-//     // Inject the customFetch instance as $customFetch
-//     return {
-//       provide: {
-//         authApi,
-//       },
-//     };
-//   },
-// });
+  const api = $fetch.create({
+    baseURL: useRuntimeConfig().public.backendUrl,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    onRequest({ request, options, error }) {
+      if (session.value?.token) {
+        // note that this relies on ofetch >= 1.4.0 - you may need to refresh your lockfile
+        options.headers.set("Authorization", `Bearer ${session.value?.token}`);
+      } else {
+        options.headers.set("X-Api-Key", useRuntimeConfig().apiKey);
+      }
+    },
+    onRequestError({ request, options, error }) {
+      console.error("Request error", error);
+    },
+    onResponse({ response }) {
+      console.log("Response received api:", response);
+      //   const responseData = response._data as {
+      //     data: any | any[];
+      //     message: string;
+      //     statusCode: number;
+      //   };
+      // Process the response data here if needed
+    },
+    async onResponseError({ response }) {
+      if (response.status === 401) {
+        localStorage.clear();
+        Swal.fire(
+          "Session invalid",
+          "Sesi anda telah berahir / Anda login di perangkat lain!",
+          "error"
+        ).then(async (e) => {
+          if (e.isConfirmed) {
+            await navigateTo("/auth/login");
+          }
+        });
+      }
+    },
+  });
+
+  // Expose to useNuxtApp().$api
+  return {
+    provide: {
+      api,
+    },
+  };
+});

@@ -214,7 +214,7 @@ watch(
           <span data-key="t-menu"> menu </span>
         </li>
         <li class="nav-item">
-          <NuxtLink class="nav-link menu-link" to="/">
+          <NuxtLink class="nav-link menu-link" to="/dashboard">
             <i class="ri-dashboard-2-line"></i>
             <span>Dashboard</span>
           </NuxtLink>
