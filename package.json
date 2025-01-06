@@ -19,6 +19,7 @@
     "clipboard": "^2.0.11",
     "moment": "^2.30.1",
     "nuxt": "^3.14.1592",
+    "nuxt-auth-utils": "0.5.7",
     "pinia": "^2.3.0",
     "pinia-plugin-persistedstate": "^4.2.0",
     "sass": "^1.83.0",

@@ -5,9 +5,9 @@ export default defineNuxtConfig({
   css: ["~/assets/scss/config/app.scss"],
   runtimeConfig: {
     public: {
-      backendUrl: process.env.NUXT_PUBLIC_BACKEND_URL
+      backendUrl: process.env.NUXT_PUBLIC_BACKEND_URL,
+      apiKey: process.env.NUXT_API_KEY,
     },
-    apiKey: process.env.NUXT_API_KEY,
   },
   // routeRules: {
   //   '/**': { appMiddleware: 'auth' },
@@ -20,6 +20,10 @@ export default defineNuxtConfig({
         },
       },
     },
+  },
+  particles: {
+    mode: "slim",
+    lazy: true,
   },
   modules: [
     "@pinia/nuxt",

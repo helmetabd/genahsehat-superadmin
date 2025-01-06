@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import type { LayoutKey } from '#build/types/layouts';
+  const route = useRoute()
 
-  const layout = useLayoutStore().layoutValue.layoutType
-  const type = layout == 'vertical' || layout === 'semibox' ? 'vertical-layout' : 'horizontal-layout' as LayoutKey
+  const layout = useLayoutStore().layoutValue.layoutType ?? 'vertical'
+  let type =ref(layout == 'vertical' || layout === 'semibox' ? 'vertical-layout' : 'horizontal-layout' as LayoutKey)
+  if(route.name?.toString().includes('auth')) {
+    type.value = 'blank-layout'
+  }
 </script>
 <template>
   <div>
     <ClientOnly>
+      <NuxtLoadingIndicator />
       <NuxtLayout :name="type">
         <NuxtPage />
       </NuxtLayout>
