@@ -35,6 +35,7 @@ export interface ButtonConfig {
     customizeRow?: boolean
     color?: boolean
     params?: { id: string; date: any }
+    sticky?: boolean
   }
   
   export interface GroupHeader {

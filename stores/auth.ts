@@ -21,12 +21,26 @@ export const useAuthStore = defineStore(
       try {
         loading.value = true;
         const { $api } = useNuxtApp();
-        const data = await $api<{data: any, message: string, statusCode: number}>("/auth/login/email", {
+        const data = await $api<{
+          data: any;
+          message: string;
+          statusCode: number;
+        }>("/auth/login/email", {
           method: "POST",
           body: payload,
         });
-        const tokenCookie = useCookie<{ token: string }>('token', {maxAge: 60 * 60 * 24})
-        tokenCookie.value = data.data.token
+        const tokenCookie = useCookie<{ token: string }>("token", {
+          maxAge: 60 * 60 * 24,
+        });
+        tokenCookie.value = data.data.token;
+        const profile = await $api<{
+          data: any;
+          message: string;
+          statusCode: number;
+        }>("/profiles/me", {
+          headers: { Authorization: `Bearer ${data.data.token}` },
+        });
+        user.value = profile.data;
         // token.value = data.value as string;
         // role.value = data.role;
         // user.value = data.user;

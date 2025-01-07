@@ -12,6 +12,10 @@ defineProps({
   customIcon: {
     type: Boolean,
     default: false
+  },
+  backgroundIcon: {
+    type: String,
+    default: "bg-light"
   }
 })
 </script>
@@ -25,7 +29,7 @@ defineProps({
       >
         <div class="avatar-sm flex-shrink-0">
           <slot name="customCardIcon"></slot>
-          <span class="avatar-title bg-light text-primary rounded-circle fs-3" v-if="!customIcon">
+          <span class="avatar-title text-primary rounded-circle fs-3" :class="backgroundIcon" v-if="!customIcon">
             <slot name="cardIcon"></slot>
           </span>
         </div>

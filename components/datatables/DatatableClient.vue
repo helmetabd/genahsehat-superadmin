@@ -868,7 +868,17 @@ onMounted(() => {
                   '; cursor:' +
                   (column.sortable ? ' pointer;' : ' default;')
                 "
-                :class="checkIcon(column) + ' ' + column.headerClass"
+                :class="
+                  checkIcon(column) +
+                  ' ' +
+                  column.headerClass +
+                  ' ' +
+                  (column.sticky
+                    ? 'sticky '
+                    : state.columns[index + 1]?.sticky
+                    ? 'before-sticky '
+                    : '')
+                "
                 :hidden="column.hidden ?? false"
                 aria-controls="datatable"
               >
@@ -889,13 +899,13 @@ onMounted(() => {
                 <td
                   v-for="(column, columnIndex) in state.columns"
                   :key="columnIndex"
-                  :class="
-                    column.targetCollapsed
-                      ? 'dtr-control'
-                      : '' + column.bold
-                      ? 'fw-semibold '
-                      : 'fw-normal '
-                  "
+                  :class="{
+                    'dtr-control': column.targetCollapsed,
+                    'fw-semibold': column.bold,
+                    'fw-normal': !column.bold,
+                    sticky: column.sticky,
+                    'before-sticky': state.columns[index + 1]?.sticky,
+                  }"
                   @click="column.targetCollapsed && toggleCollapsed(index)"
                   :hidden="column.hidden ?? false"
                 >
@@ -924,23 +934,49 @@ onMounted(() => {
                         :label="renderCellContent(item, column).props.label"
                         :status="renderCellContent(item, column).props.status"
                       />
-                      <template v-else-if="renderCellContent(item, column)?.component ==='router-link'">
-                        <template v-if="renderCellContent(item, column)?.parent">
-                          <NuxtLink> :to="renderCellContent(item, column).parent.props.to">
-                            <i v-if="renderCellContent(item, column)?.parent?.iconClass"
-                              :class="renderCellContent(item, column).parent.iconClass"
-                              :style="renderCellContent(item, column)?.parent?.iconColorObject
-                                  ? 'color: ' + renderCellContent(item, column).parent.iconColorObject + ';'
-                                  : renderCellContent(item, column)?.parent?.iconColor
-                                  ? 'color: ' + renderCellContent(item, column).parent.iconColor + ';'
+                      <template
+                        v-else-if="
+                          renderCellContent(item, column)?.component ===
+                          'router-link'
+                        "
+                      >
+                        <template
+                          v-if="renderCellContent(item, column)?.parent"
+                        >
+                          <NuxtLink>
+                            :to="renderCellContent(item,
+                            column).parent.props.to">
+                            <i
+                              v-if="
+                                renderCellContent(item, column)?.parent
+                                  ?.iconClass
+                              "
+                              :class="
+                                renderCellContent(item, column).parent.iconClass
+                              "
+                              :style="
+                                renderCellContent(item, column)?.parent
+                                  ?.iconColorObject
+                                  ? 'color: ' +
+                                    renderCellContent(item, column).parent
+                                      .iconColorObject +
+                                    ';'
+                                  : renderCellContent(item, column)?.parent
+                                      ?.iconColor
+                                  ? 'color: ' +
+                                    renderCellContent(item, column).parent
+                                      .iconColor +
+                                    ';'
                                   : null
                               "
                             />
                             {{ renderCellContent(item, column).parent.text }}
                           </NuxtLink>
-                          <i class="las la-arrow-right ms-1 me-1 text-muted"/>
+                          <i class="las la-arrow-right ms-1 me-1 text-muted" />
                         </template>
-                        <NuxtLink :to="renderCellContent(item, column).props.to">
+                        <NuxtLink
+                          :to="renderCellContent(item, column).props.to"
+                        >
                           <img
                             v-if="renderCellContent(item, column)?.imageSrc"
                             :src="renderCellContent(item, column).imageSrc"
@@ -949,16 +985,26 @@ onMounted(() => {
                           <i
                             v-if="renderCellContent(item, column)?.iconClass"
                             :class="renderCellContent(item, column)?.iconClass"
-                            :style="renderCellContent(item, column)?.iconColorObject
-                                ? 'color: ' + renderCellContent(item, column)?.iconColorObject + ';'
+                            :style="
+                              renderCellContent(item, column)?.iconColorObject
+                                ? 'color: ' +
+                                  renderCellContent(item, column)
+                                    ?.iconColorObject +
+                                  ';'
                                 : renderCellContent(item, column)?.iconColor
-                                ? 'color: ' + renderCellContent(item, column)?.iconColor +';'
+                                ? 'color: ' +
+                                  renderCellContent(item, column)?.iconColor +
+                                  ';'
                                 : null
                             "
                           ></i>
                           {{ renderCellContent(item, column).text }}
-                          <i v-if="renderCellContent(item, column)?.uniqueFirst" 
-                            :class="renderCellContent(item, column)?.uniqueFirst"/>
+                          <i
+                            v-if="renderCellContent(item, column)?.uniqueFirst"
+                            :class="
+                              renderCellContent(item, column)?.uniqueFirst
+                            "
+                          />
                           <!-- <template v-if="column.custom?.uniqueIcon">
                             <slot
                               :name="`column-${column.name}-unique`"
