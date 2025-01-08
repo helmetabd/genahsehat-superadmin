@@ -837,15 +837,15 @@ onMounted(() => {
           <span>Print</span>
         </button>
       </div>
-      <div style="overflow-x: auto; overflow-y: hidden">
+      <div style="overflow-x: auto; overflow-y: hidden;">
         <table
           ref="tableData"
           id="datatable"
-          class="table table-hover table-bordered align-middle text-nowrap dt-responsive nowrap no-footer dataTable"
+          class="table table-hover table-bordered align-middle text-nowrap dt-responsive nowrap no-footer dataTable pe-3"
           :class="props.collapsed ? 'dtr-inline collapsed' : props.table_class"
-          style="width: 100%"
           aria-describedby="datatable_info"
-        >
+          >
+          <!-- style="width: 100%; max-width: 100%;" -->
           <thead class="align-middle">
             <tr v-if="group">
               <th
@@ -903,8 +903,8 @@ onMounted(() => {
                     'dtr-control': column.targetCollapsed,
                     'fw-semibold': column.bold,
                     'fw-normal': !column.bold,
-                    sticky: column.sticky,
-                    'before-sticky': state.columns[index + 1]?.sticky,
+                    'sticky': column.sticky,
+                    'before-sticky': state.columns[columnIndex + 1]?.sticky,
                   }"
                   @click="column.targetCollapsed && toggleCollapsed(index)"
                   :hidden="column.hidden ?? false"

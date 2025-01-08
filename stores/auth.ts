@@ -1,14 +1,11 @@
+import type { User } from "~/interfaces/user";
+
 export const useAuthStore = defineStore(
   "auth",
   () => {
     const permit_token = ref(null);
-    const token = ref(
-      "user-session:90c0a521-a7d0-4fa9-a488-17fdb2618314:8376eff6-f8c4-43f4-a309-e222c9a1e724" as
-        | string
-        | null
-    );
-    const user = ref(null);
-    const role = ref({ id: 2, name: "admin", display_name: "Admin" });
+    const token = ref(null as string | null);
+    const user = ref<User | null>(null);
     const permissions = ref([
       { module: "user", create: 0, read: 1, update: 0 },
       { module: "user.users", create: 1, read: 1, update: 1 },
@@ -33,6 +30,7 @@ export const useAuthStore = defineStore(
           maxAge: 60 * 60 * 24,
         });
         tokenCookie.value = data.data.token;
+        token.value = data.data.token;
         const profile = await $api<{
           data: any;
           message: string;
@@ -41,14 +39,6 @@ export const useAuthStore = defineStore(
           headers: { Authorization: `Bearer ${data.data.token}` },
         });
         user.value = profile.data;
-        // token.value = data.value as string;
-        // role.value = data.role;
-        // user.value = data.user;
-        // permissions.value = data.permissions;
-        // const settings = data.user.settings;
-        // if (settings != null) {
-        //   localStorage.setItem("layoutValue", settings);
-        // }
       } catch (error: any) {
         if (
           error.response?.status == 503 &&
@@ -62,36 +52,41 @@ export const useAuthStore = defineStore(
         loading.value = false;
       }
     };
-    // const loggingOut = async () => {
-    // try {
-    //   if (token.value != null)
-    //   await useAsyncData(() => authApi("/auth/login", { method: "POST", body: {token: token} }))
-    //   localStorage.clear();
-    //   history.go();
-    // } catch (error) {
-    //   console.error(error);
-    // }
-    // await apiClient.post("/auth/logout").finally(async () => {
-    //   localStorage.clear();
-    //   history.go();
-    // });
-    // };
+    const loggingOut = async () => {
+      if (token.value != null)
+        try {
+          const { $api } = useNuxtApp();
+          await $api<{
+            data: any;
+            message: string;
+            statusCode: number;
+          }>("/auth/logout", {
+            method: "POST",
+            body: { token: token.value },
+          });
+          useCookie("token").value = null;
+          token.value = null;
+          localStorage.clear();
+          history.go();
+        } catch (error) {
+          console.error(error);
+        }
+    };
     return {
       user,
-      role,
       token,
       permissions,
       error,
       loading,
       permit_token,
       signIn,
-      // loggingOut,
+      loggingOut,
     };
   },
   {
     persist: [
       {
-        pick: ["permit_token", "token", "user", "role", "permissions"],
+        pick: ["permit_token", "token", "user", "permissions"],
         serializer: {
           serialize: (v) => JSON.stringify(v),
           deserialize: (v) => (v ? JSON.parse(v) : null),

@@ -7,12 +7,11 @@ File: Custom Css File
 */
 .flatpickr-calendar {
   background-color: var(--#{$prefix}secondary-bg) !important;
-  box-shadow:
-    1px 0 0 var(--#{$prefix}border-color),
-    -1px 0 0 var(--#{$prefix}border-color),
-    0 1px 0 var(--#{$prefix}border-color),
-    0 -1px 0 var(--#{$prefix}border-color),
-    0 3px 13px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 1px 0 0 var(--#{$prefix}border-color),
+  -1px 0 0 var(--#{$prefix}border-color),
+  0 1px 0 var(--#{$prefix}border-color),
+  0 -1px 0 var(--#{$prefix}border-color),
+  0 3px 13px rgba(0, 0, 0, 0.08) !important;
 
   &.hasTime .flatpickr-time {
     height: 40px;
@@ -70,6 +69,7 @@ File: Custom Css File
 
   input,
   .flatpickr-am-pm {
+
     &:hover,
     &:focus {
       background: rgba($primary, 0.04) !important;
@@ -78,6 +78,7 @@ File: Custom Css File
 }
 
 .flatpickr-months {
+
   .flatpickr-prev-month,
   .flatpickr-next-month {
     color: rgba($white, 0.9) !important;
@@ -216,6 +217,7 @@ File: Custom Css File
 
 .flatpickr-calendar {
   .flatpickr-current-month {
+
     .flatpickr-monthDropdown-months,
     input.cur-year {
       color: $white !important;
@@ -347,6 +349,7 @@ File: Custom Css File
 
 //mailbox
 .fc-media-screen {
+
   .fc-h-event,
   .fc-v-event {
     border: none;
@@ -648,6 +651,7 @@ input[type='checkbox'] {
   cursor: pointer;
   color: #364574;
 }
+
 .link:hover,
 a:hover {
   color: #2385ba;
@@ -686,7 +690,7 @@ a:hover {
   width: 50% !important;
 }
 
-table.dataTable > tbody > tr.child ul.dtr-details > li {
+table.dataTable>tbody>tr.child ul.dtr-details>li {
   border: none;
 }
 
@@ -745,7 +749,7 @@ table.dataTable > tbody > tr.child ul.dtr-details > li {
     padding-right: 12px !important;
   }
 
-  div.dataTables_paginate > ul.pagination > li > button.page-link {
+  div.dataTables_paginate>ul.pagination>li>button.page-link {
     font-size: 8px;
   }
 
@@ -794,9 +798,11 @@ table.dataTable > tbody > tr.child ul.dtr-details > li {
 
 .big-font {
   font-size: calc(1.375rem + 0.9vw);
+
   @media (min-width: 1280px) {
     font-size: calc(1.375rem + 0.9vw);
   }
+
   @media (min-width: 1440px) {
     font-size: calc(1.5rem + 1.5vw);
   }
@@ -808,6 +814,7 @@ table.dataTable > tbody > tr.child ul.dtr-details > li {
   @media (min-width: 1280px) {
     font-size: calc(1.125rem + 0.6vw);
   }
+
   @media (min-width: 1440px) {
     font-size: calc(1.25rem + 0.9vw);
   }
@@ -819,6 +826,7 @@ table.dataTable > tbody > tr.child ul.dtr-details > li {
   @media (min-width: 1280px) {
     font-size: calc(1rem);
   }
+
   @media (min-width: 1440px) {
     font-size: calc(1.375rem);
   }
@@ -829,3 +837,35 @@ table.dataTable > tbody > tr.child ul.dtr-details > li {
     border-color: $input-color !important;
   }
 }
+
+// .switch-custom:focus~.custom-control-label::before {
+//   border-color: red !important;
+//   box-shadow: 0 0 0 0.2rem rgba(255, 47, 69, 0.25) !important;
+// }
+
+// .custom-control-input:checked~.custom-control-label::before {
+//   border-color: red !important;
+//   background-color: red !important;
+// }
+
+// .custom-control-input:active~.custom-control-label::before {
+//   background-color: red !important;
+//   border-color: red !important;
+// }
+
+// .custom-control-input:focus:not(:checked)~.custom-control-label::before {
+//   border-color: red !important;
+// }
+
+// .custom-control-input-green:not(:disabled):active~.custom-control-label::before {
+//   background-color: red !important;
+//   border-color: red !important;
+// }
+
+// .switch-custom .form-check-input:focus { 
+.switch-custom .custom-control-input:not(:checked) {
+  border-color: red !important;
+  background-color: red !important;
+}
+
+// }

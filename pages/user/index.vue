@@ -65,6 +65,13 @@ const state = reactive({
       label: "Role",
       sortable: true,
       filterable: true,
+    },
+    {
+      name: "isActive",
+      label: "Status",
+      sortable: true,
+      filterable: true,
+      customizeRow: true,
       sticky: true,
     },
   ] as Column[],
@@ -73,11 +80,15 @@ const state = reactive({
 const { $api } = useNuxtApp();
 const { data: modules } = await useAsyncData("modules", () => $api("/users"));
 const datas = modules.value as {
-  data: User[];
+  data: {
+    users: User[];
+    count: { active: number; inactive: number; total: number };
+  };
   message: string;
   statusCode: number;
 };
-const users: User[] = datas.data;
+const users: User[] = datas.data.users;
+const count = datas.data.count;
 function toggleHeader(header: string) {
   let index = state.columns.findIndex((col) => col.label === header);
   state.columns[index].hidden = !state.columns[index].hidden;
@@ -102,7 +113,7 @@ async function clear() {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Total Users
           </p>
-          <h4 class="mb-0">1.000.000</h4>
+          <h4 class="mb-0">{{ count.total }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -115,7 +126,7 @@ async function clear() {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Active Users
           </p>
-          <h4 class="mb-0">1.000.000</h4>
+          <h4 class="mb-0">{{ count.active }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -128,7 +139,7 @@ async function clear() {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Deactive Users
           </p>
-          <h4 class="mb-0">1.000.000</h4>
+          <h4 class="mb-0">{{ count.inactive }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -178,7 +189,21 @@ async function clear() {
         v-if="users"
         :data-table="users"
         :column="state.columns"
-      ></DatatablesDatatableClient>
+      >
+        <template #column-isActive="{ item }">
+          <div class="form-check form-switch switch-custom form-switch-success">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              role="switch"
+              v-model="item.isActive"
+            />
+          </div>
+          <!-- <span class="badge bg-success-subtle text-success">{{
+            item.isActive ? "Active" : "Deactive"
+          }}</span> -->
+        </template></DatatablesDatatableClient
+      >
     </template>
   </CardsBaseCard>
   <ModalsModalBasic

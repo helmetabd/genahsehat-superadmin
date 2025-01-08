@@ -5,7 +5,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   const token = useCookie("token");
 
   // Check if user is authenticated
-  if (!token.value) {
+  if (token.value == null || token.value == undefined) {
     const publicRoutes = ["/auth/login", "/auth/register"];
 
     // If the route is not public, redirect to login

@@ -11,16 +11,18 @@ export default defineNuxtPlugin((nuxtApp) => {
       "Content-Type": "application/json",
     },
     onRequest({ request, options, error }) {
-      if (token.value) {
-        // note that this relies on ofetch >= 1.4.0 - you may need to refresh your lockfile
-        options.headers.set("Authorization", `Bearer ${token.value}`);
-      } else if (
-        ["/login", "/signup", "/forgot-password"].some((route) =>
+      if (
+        ["/login", "/signup", "/forgot-password", "/logout"].some((route) =>
           request.toString().includes(route)
         )
       ) {
         console.log(request);
         options.headers.set("X-Api-Key", useRuntimeConfig().public.apiKey); // Add the secret API key
+      } else if (token.value) {
+        // note that this relies on ofetch >= 1.4.0 - you may need to refresh your lockfile
+        options.headers.set("Authorization", `Bearer ${token.value}`);
+      } else {
+        throw error
       }
       //  else {
       //   console.log("No token found in session", useRuntimeConfig().apiKey);

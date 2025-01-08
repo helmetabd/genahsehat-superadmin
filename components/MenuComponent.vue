@@ -33,7 +33,7 @@ const data = reactive({
 });
 
 function checkSU() {
-  return authStore.role.id == 1;
+  return authStore.user?.role == "superuser" ? true : false;
 }
 
 function checkAuth(req: string) {

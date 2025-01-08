@@ -9,8 +9,8 @@ const data = reactive({
   flag: null,
   search: "",
   myVar: 1,
-  display_name: "Super Admin",
-  name: "Hilmi",
+  display_name: authStore.user?.role,
+  name: authStore.user?.displayName,
   avatar: getAvatar(null),
   options: [],
 });
