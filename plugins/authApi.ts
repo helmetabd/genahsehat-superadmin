@@ -1,7 +1,6 @@
 import Swal from "sweetalert2";
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const { session } = useUserSession();
   const token = useCookie("token");
 
   const api = $fetch.create({

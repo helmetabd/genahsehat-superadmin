@@ -9,9 +9,6 @@ export default defineNuxtConfig({
       apiKey: process.env.NUXT_API_KEY,
     },
   },
-  // routeRules: {
-  //   '/**': { appMiddleware: 'auth' },
-  // },
   vite: {
     css: {
       preprocessorOptions: {

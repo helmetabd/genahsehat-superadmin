@@ -14,7 +14,10 @@ export const useAuthStore = defineStore(
     ]);
     const loading = ref(false);
     const error = ref("");
-    const signIn = async (payload: any) => {
+    const signIn = async (
+      payload: any,
+      type: "email" | "username" | "phone"
+    ) => {
       try {
         loading.value = true;
         const { $api } = useNuxtApp();
@@ -22,37 +25,30 @@ export const useAuthStore = defineStore(
           data: any;
           message: string;
           statusCode: number;
-        }>("/auth/login/email", {
+        }>(`/auth/login/${type}`, {
           method: "POST",
           body: payload,
         });
+        const userCookie = useCookie<{ user: User }>("user", {
+          maxAge: 60 * 60 * 24,
+        });
+        userCookie.value = data.data.user;
+        user.value = data.data.user;
         const tokenCookie = useCookie<{ token: string }>("token", {
           maxAge: 60 * 60 * 24,
         });
         tokenCookie.value = data.data.token;
         token.value = data.data.token;
-        const profile = await $api<{
-          data: any;
-          message: string;
-          statusCode: number;
-        }>("/profiles/me", {
-          headers: { Authorization: `Bearer ${data.data.token}` },
-        });
-        user.value = profile.data;
+        console.log(userCookie);
+        console.log(tokenCookie);
       } catch (error: any) {
-        if (
-          error.response?.status == 503 &&
-          error.response.data.message == "maintenance"
-        ) {
-          error.value = "Genah Sehat Admin is under maintenance!";
-        } else {
-          error.value = error.response.data.message;
-        }
+        console.error(error);
       } finally {
         loading.value = false;
       }
     };
     const loggingOut = async () => {
+      console.log(token.value);
       if (token.value != null)
         try {
           const { $api } = useNuxtApp();
@@ -65,7 +61,9 @@ export const useAuthStore = defineStore(
             body: { token: token.value },
           });
           useCookie("token").value = null;
+          useCookie("user").value = null;
           token.value = null;
+          user.value = null;
           localStorage.clear();
           history.go();
         } catch (error) {

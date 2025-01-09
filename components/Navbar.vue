@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useAuthStore } from "~/stores/auth";
-
 const layoutStore = useLayoutStore();
 const authStore = useAuthStore();
 const { changeMode } = layoutStore;

@@ -191,7 +191,7 @@ async function clear() {
         :column="state.columns"
       >
         <template #column-isActive="{ item }">
-          <div class="form-check form-switch switch-custom form-switch-success">
+          <div class="form-check form-switch switch-custom form-switch-success text-center">
             <input
               class="form-check-input"
               type="checkbox"
@@ -199,9 +199,6 @@ async function clear() {
               v-model="item.isActive"
             />
           </div>
-          <!-- <span class="badge bg-success-subtle text-success">{{
-            item.isActive ? "Active" : "Deactive"
-          }}</span> -->
         </template></DatatablesDatatableClient
       >
     </template>

@@ -2,6 +2,7 @@
 import { required, helpers } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import type { Container, IOptions } from "@tsparticles/engine";
+import type { login } from "~/interfaces/auth";
 const router = useRouter();
 const state = reactive({
   submitted: false,
@@ -89,7 +90,7 @@ const onLoad = (container: Container) => {
   setTimeout(() => container.play(), 2000);
 };
 const submitForm = reactive({
-  user_identity: null,
+  user_identity: null as string | null,
   password: "",
 });
 const authStore = useAuthStore();
@@ -104,15 +105,21 @@ const $v = useVuelidate(rules, submitForm);
 const signIn = async () => {
   await $v.value.$validate();
   let loginData = {
-    email: submitForm.user_identity,
     password: submitForm.password,
-  };
-  authStore.signIn(loginData).then(() => router.push({ name: "Dashboard" }));
+  } as login;
+  if(submitForm.user_identity) {
+    if(getInputType(submitForm.user_identity) === "phone") {
+      submitForm.user_identity = convertPhoneNumber(submitForm.user_identity);
+      loginData.phone = submitForm.user_identity;
+    } else {
+      loginData[getInputType(submitForm.user_identity)] = submitForm.user_identity;
+    }
+    authStore.signIn(loginData, getInputType(submitForm.user_identity)).then(() => router.push({ name: "Dashboard" }));
+  }
 };
 </script>
 
 <template>
-  <!-- <div class="auth-page-wrapper pt-5"> -->
   <div
     class="auth-page-wrapper auth-bg-cover py-5 d-flex justify-content-center align-items-center min-vh-100"
   >
@@ -124,27 +131,6 @@ const signIn = async () => {
         :options="state.configParticles"
       />
     </div>
-    <!-- <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
-      <NuxtParticles
-        id="tsparticles"
-        class="bg-overlay"
-        @load="onLoad"
-        :options="state.configParticles"
-      />
-      <div class="shape">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          version="1.1"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="0 0 1440 120"
-        >
-          <path
-            d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"
-          ></path>
-        </svg>
-      </div>
-    </div> -->
-    <!-- <div class="auth-page-content"> -->
     <div class="auth-page-content overflow-hidden pt-lg-5">
       <div class="container">
         <div class="row">
@@ -235,13 +221,13 @@ const signIn = async () => {
                     <div class="mt-4">
                       <form @submit.prevent="signIn">
                         <div class="mb-3">
-                          <label for="email" class="form-label">Email</label>
+                          <label for="email" class="form-label">User Identity</label>
                           <input
                             type="text"
                             class="form-control"
                             id="email"
                             v-model="submitForm.user_identity"
-                            placeholder="Enter email"
+                            placeholder="Enter username, email or phone"
                             required
                           />
                           <div class="invalid-feedback">

@@ -8,6 +8,6 @@ export interface register {
 export interface login {
     email?: string
     username?: string
-    phone?: string
+    phone?: number | string
     password: string
 }

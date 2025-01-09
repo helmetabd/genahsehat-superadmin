@@ -10,7 +10,7 @@ const layoutStore = useLayoutStore();
 
 const type = computed(() => {
   const layout = layoutStore.layoutValue.layoutType ?? "vertical";
-  if (route.name?.toString().includes("auth")) {
+  if (route.name?.toString().includes("auth") || route.name?.toString().includes("errors")) {
     return "blank-layout" as LayoutKey;
   }
   return layout === "vertical" || layout === "semibox"
