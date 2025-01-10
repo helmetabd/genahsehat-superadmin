@@ -5,8 +5,6 @@ import Swal from "sweetalert2";
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const token = useCookie("token");
   const authStore = useAuthStore();
-  console.log(to);
-  console.log(from);
   if (from.path == "/") {
     if (to.name == "auth-login") {
       if (authStore.token) {
@@ -22,7 +20,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
             }
           });
         }
-        return navigateTo("/Dashboard");
+        return navigateTo("/dashboard");
       }
     }
   }
@@ -45,7 +43,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // }
 
     if (to.path === "/") {
-      return navigateTo({ name: "Dashboard" });
+      return navigateTo({ name: "dashboard" });
     }
 
     if (to.name === undefined) {

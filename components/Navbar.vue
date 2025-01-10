@@ -94,7 +94,7 @@ function initFullScreen() {
         <div class="d-flex">
           <!-- LOGO -->
           <div class="navbar-brand-box horizontal-logo">
-            <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-dark">
+            <NuxtLink :to="{ name: 'dashboard' }" class="logo logo-dark">
               <span class="logo-sm">
                 <img src="../assets/images/logo-sm-light.png" alt="" height="22" />
               </span>
@@ -103,7 +103,7 @@ function initFullScreen() {
               </span>
             </NuxtLink>
 
-            <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-light">
+            <NuxtLink :to="{ name: 'dashboard' }" class="logo logo-light">
               <span class="logo-sm"
                 >´
                 <img src="../assets/images/logo-sm-dark.png" alt="" height="22" />

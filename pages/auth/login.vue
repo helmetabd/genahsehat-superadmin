@@ -114,7 +114,7 @@ const signIn = async () => {
     } else {
       loginData[getInputType(submitForm.user_identity)] = submitForm.user_identity;
     }
-    authStore.signIn(loginData, getInputType(submitForm.user_identity)).then(() => router.push({ name: "Dashboard" }));
+    authStore.signIn(loginData, getInputType(submitForm.user_identity)).then(() => router.push({ name: "dashboard" }));
   }
 };
 </script>

@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-useHead({
-  titleTemplate: "%s - Genah Sehat Admin",
-});
 import type { LayoutKey } from "#build/types/layouts";
 import { computed } from "vue";
-
 const route = useRoute();
 const layoutStore = useLayoutStore();
 
 const type = computed(() => {
   const layout = layoutStore.layoutValue.layoutType ?? "vertical";
-  if (route.name?.toString().includes("auth") || route.name?.toString().includes("errors")) {
+  if (
+    route.name?.toString().includes("auth") ||
+    route.name?.toString().includes("errors")
+  ) {
     return "blank-layout" as LayoutKey;
   }
   return layout === "vertical" || layout === "semibox"

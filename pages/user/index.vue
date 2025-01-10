@@ -1,13 +1,8 @@
 <script setup lang="ts">
 import type { User } from "~/interfaces/user";
 import type { Column } from "~/interfaces/utils";
-definePageMeta({
-  name: "User List",
-});
-useSeoMeta({
+useHead({
   title: "User List",
-  description: "User List",
-  keywords: "User List",
 });
 
 const state = reactive({
@@ -75,20 +70,48 @@ const state = reactive({
       sticky: true,
     },
   ] as Column[],
+  users: [] as User[],
+  count: { active: 0, inactive: 0, total: 0 },
 });
 
 const { $api } = useNuxtApp();
-const { data: modules } = await useAsyncData("modules", () => $api("/users"));
-const datas = modules.value as {
+// const { data: modules } = await useAsyncData<{
+//   data: {
+//     users: User[];
+//     count: { active: number; inactive: number; total: number };
+//   };
+//   message: string;
+//   statusCode: number;
+// }>("modules", () =>
+//   $api("/users",
+//   {
+//     onResponse() {
+//       if (modules.value) {
+//         state.users = modules.value.data.users;
+//         state.count = modules.value.data.count;
+//       }
+//     },
+//   }
+// )
+// );
+const { data: modules } = await useAsyncData<{
   data: {
     users: User[];
     count: { active: number; inactive: number; total: number };
   };
   message: string;
   statusCode: number;
-};
-const users: User[] = datas.data.users;
-const count = datas.data.count;
+}>("modules", () => $api("/users"));
+// const datas = reactive(modules.value as {
+//   data: {
+//     users: User[];
+//     count: { active: number; inactive: number; total: number };
+//   };
+//   message: string;
+//   statusCode: number;
+// });
+// const users = ref(datas.data.users);
+// const count = ref(datas.data.count);
 function toggleHeader(header: string) {
   let index = state.columns.findIndex((col) => col.label === header);
   state.columns[index].hidden = !state.columns[index].hidden;
@@ -100,6 +123,15 @@ async function clear() {
   // state.options = await userService.create()
   // state.userForm = {}
   // state.checked = false
+}
+async function updateStatus(id: number, isActive: boolean) {
+  await $api(`/users/${id}`, {
+    method: "patch",
+    body: { isActive: isActive },
+    onResponse() {
+      refreshNuxtData("modules");
+    },
+  });
 }
 </script>
 <template>
@@ -113,7 +145,8 @@ async function clear() {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Total Users
           </p>
-          <h4 class="mb-0">{{ count.total }}</h4>
+          <!-- <h4 class="mb-0">{{ count.total }}</h4> -->
+          <h4 class="mb-0">{{ modules?.data.count.total }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -126,7 +159,8 @@ async function clear() {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Active Users
           </p>
-          <h4 class="mb-0">{{ count.active }}</h4>
+          <!-- <h4 class="mb-0">{{ count.active }}</h4> -->
+          <h4 class="mb-0">{{ modules?.data.count.active }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -139,7 +173,8 @@ async function clear() {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Deactive Users
           </p>
-          <h4 class="mb-0">{{ count.inactive }}</h4>
+          <!-- <h4 class="mb-0">{{ count.inactive }}</h4> -->
+          <h4 class="mb-0">{{ modules?.data.count.inactive }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -186,21 +221,28 @@ async function clear() {
     </template>
     <template #cardBody>
       <DatatablesDatatableClient
+        v-if="modules?.data.users"
+        :data-table="modules.data.users"
+        :column="state.columns"
+      >
+      <!-- <DatatablesDatatableClient
         v-if="users"
         :data-table="users"
         :column="state.columns"
-      >
+      > -->
         <template #column-isActive="{ item }">
-          <div class="form-check form-switch switch-custom form-switch-success text-center">
+          <div
+            class="form-check form-switch switch-custom form-switch-success text-center"
+          >
             <input
               class="form-check-input"
               type="checkbox"
               role="switch"
               v-model="item.isActive"
+              @change="updateStatus(item.id, item.isActive)"
             />
-          </div>
-        </template></DatatablesDatatableClient
-      >
+          </div> </template
+      ></DatatablesDatatableClient>
     </template>
   </CardsBaseCard>
   <ModalsModalBasic

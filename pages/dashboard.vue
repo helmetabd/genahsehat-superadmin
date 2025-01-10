@@ -1,6 +1,6 @@
 <script setup lang="ts">
-definePageMeta({
-  name: "Dashboard",
+useSeoMeta({
+  title: "Dashboard",
 });
 </script>
 <template>

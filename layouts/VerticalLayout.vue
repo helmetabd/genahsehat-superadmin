@@ -93,7 +93,7 @@ onUnmounted(() => {
         <!-- LOGO -->
         <div class="navbar-brand-box">
           <!-- Dark Logo-->
-          <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-dark">
+          <NuxtLink :to="{ name: 'dashboard' }" class="logo logo-dark">
             <span class="logo-sm">
               <img
                 src="../assets/images/logo-light.png"
@@ -112,7 +112,7 @@ onUnmounted(() => {
             </span>
           </NuxtLink>
           <!-- Light Logo-->
-          <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-light">
+          <NuxtLink :to="{ name: 'dashboard' }" class="logo logo-light">
             <span class="logo-sm">
               <img
                 src="../assets/images/logo-dark.png"

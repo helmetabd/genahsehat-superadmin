@@ -2,6 +2,25 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
+  app: {
+    head: {
+      templateParams: {
+        seperator: "—", // choose a seperator
+        siteName: "Genah Sehat Admin", // set a site name
+      },
+      meta: [
+        {
+          name: "description",
+          content: "Genah Sehat Admin Page for managing data users",
+        },
+        {
+          name: "keywords",
+          content: "Genah Sehat, Admin, Users, Data, Management",
+        },
+        { name: "author", content: "IT GBNA" },
+      ],
+    },
+  },
   css: ["~/assets/scss/config/app.scss"],
   runtimeConfig: {
     public: {

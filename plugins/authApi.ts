@@ -15,7 +15,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           request.toString().includes(route)
         )
       ) {
-        console.log(request);
+        // console.log(request);
         options.headers.set("X-Api-Key", useRuntimeConfig().public.apiKey); // Add the secret API key
       } else if (token.value) {
         // note that this relies on ofetch >= 1.4.0 - you may need to refresh your lockfile
@@ -33,7 +33,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       console.error("Request error", error);
     },
     onResponse({ response }) {
-      console.log("Response received api:", response);
+      // console.log("Response received api:", response);
       //   const responseData = response._data as {
       //     data: any | any[];
       //     message: string;

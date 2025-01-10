@@ -3,6 +3,7 @@ import type { User } from "~/interfaces/user";
 export const useAuthStore = defineStore(
   "auth",
   () => {
+    const { $api } = useNuxtApp();
     const permit_token = ref(null);
     const token = ref(null as string | null);
     const user = ref<User | null>(null);
@@ -20,7 +21,6 @@ export const useAuthStore = defineStore(
     ) => {
       try {
         loading.value = true;
-        const { $api } = useNuxtApp();
         const data = await $api<{
           data: any;
           message: string;
@@ -51,7 +51,6 @@ export const useAuthStore = defineStore(
       console.log(token.value);
       if (token.value != null)
         try {
-          const { $api } = useNuxtApp();
           await $api<{
             data: any;
             message: string;
@@ -93,3 +92,6 @@ export const useAuthStore = defineStore(
     ],
   }
 );
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useAuthStore, import.meta.hot));
+}

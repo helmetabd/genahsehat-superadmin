@@ -61,7 +61,7 @@ function initActiveMenu() {
   }, 1000);
 }
 function checkSU() {
-  return authStore.role.id == 1;
+  return authStore.user?.role == "superuser" ? true : false;
 }
 
 function checkAuth(req: string) {
@@ -83,7 +83,7 @@ function checkAuth(req: string) {
       <!-- LOGO -->
       <div class="navbar-brand-box">
         <!-- Dark Logo-->
-        <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-dark">
+        <NuxtLink :to="{ name: 'dashboard' }" class="logo logo-dark">
           <span class="logo-sm">
             <img
               src="../assets/images/logo-light.png"
@@ -102,7 +102,7 @@ function checkAuth(req: string) {
           </span>
         </NuxtLink>
         <!-- Light Logo-->
-        <NuxtLink :to="{ name: 'Dashboard' }" class="logo logo-light">
+        <NuxtLink :to="{ name: 'dashboard' }" class="logo logo-light">
           <span class="logo-sm">
             <img
               src="../assets/images/logo-dark.png"

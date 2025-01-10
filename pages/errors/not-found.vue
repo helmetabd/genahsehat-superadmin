@@ -35,7 +35,7 @@
                 <p class="text-muted mb-4">
                   The page you are looking for not available!
                 </p>
-                <NuxtLink :to="{ name: 'Dashboard' }" class="btn btn-success">
+                <NuxtLink :to="{ name: 'dashboard' }" class="btn btn-success">
                   <i class="mdi mdi-home me-1"></i>Back to home
                 </NuxtLink>
               </div>
