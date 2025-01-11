@@ -1,3 +1,5 @@
+import type { FormField, Option } from "./Utils";
+
 export interface User {
   id: number;
   email: string;
@@ -15,4 +17,38 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   imageUrl?: string | null;
+}
+
+export interface State {
+  user: User
+  userId: string | string[]
+  userProfileFormField: FormField
+  profileModal: boolean
+  pandawaModal: boolean
+  inputProfile: {
+    id: number
+    label: string
+    name: keyof FormField
+    inputType: string
+    modelValue: string | number
+    required?: boolean
+  }[]
+  checked: boolean
+  userLogsColumns: {
+    label: string
+    name?: string
+    class: string
+    target?: boolean
+    setter?: boolean
+  }[]
+  userAccountLogsColumns: {
+    label: string
+    name?: string
+    class: string
+    setter?: boolean
+  }[]
+  editParams: {
+    status: Option[]
+    role: Option[]
+  }
 }

@@ -35,4 +35,10 @@ export function convertPhoneNumber(value: string) {
     // If it already starts with `62`, return as is
     return value;
   }
+
+  export function checkAdminRole() {
+    const user = useAuthStore().user;
+    const role = user?.role;
+    return role === 'superadmin';
+  }
   

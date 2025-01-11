@@ -74,26 +74,64 @@ const state = reactive({
   count: { active: 0, inactive: 0, total: 0 },
 });
 
+const schema = {
+  displayName: {
+    type: "text",
+    label: "Name User",
+    placeholder: "Name User",
+    fieldName: "Name User",
+    rules: ["required"],
+  },
+  username: {
+    type: "text",
+    label: "Username",
+    placeholder: "Username",
+    fieldName: "Username",
+    rules: ["required"],
+  },
+  email: {
+    type: "text",
+    inputType: "email",
+    label: "Email",
+    rules: ["required", "max:255", "email"],
+    placeholder: "Email",
+    fieldName: "Email",
+    description: "You will receive a confirmation letter to this email.",
+  },
+  phone: {
+    type: "phone",
+    label: "Phone",
+    placeholder: "Phone",
+    rules: ["required"],
+    fieldName: "Phone",
+    allowIncomplete: true,
+    unmask: true,
+  },
+  password: {
+    type: "text",
+    inputType: "password",
+    label: "Password",
+    rules: ["required", "min:8", "same:password_confirmation"],
+    fieldName: "Password",
+    placeholder: "Password",
+  },
+  password_confirmation: {
+    type: "text",
+    inputType: "password",
+    label: "Password confirmation",
+    rules: ["required"],
+    fieldName: "Password confirmation",
+    placeholder: "Password again",
+    submit: false,
+  },
+  register: {
+    type: "button",
+    submits: true,
+    buttonLabel: "Create User",
+    full: true,
+  },
+};
 const { $api } = useNuxtApp();
-// const { data: modules } = await useAsyncData<{
-//   data: {
-//     users: User[];
-//     count: { active: number; inactive: number; total: number };
-//   };
-//   message: string;
-//   statusCode: number;
-// }>("modules", () =>
-//   $api("/users",
-//   {
-//     onResponse() {
-//       if (modules.value) {
-//         state.users = modules.value.data.users;
-//         state.count = modules.value.data.count;
-//       }
-//     },
-//   }
-// )
-// );
 const { data: modules } = await useAsyncData<{
   data: {
     users: User[];
@@ -102,27 +140,12 @@ const { data: modules } = await useAsyncData<{
   message: string;
   statusCode: number;
 }>("modules", () => $api("/users"));
-// const datas = reactive(modules.value as {
-//   data: {
-//     users: User[];
-//     count: { active: number; inactive: number; total: number };
-//   };
-//   message: string;
-//   statusCode: number;
-// });
-// const users = ref(datas.data.users);
-// const count = ref(datas.data.count);
 function toggleHeader(header: string) {
   let index = state.columns.findIndex((col) => col.label === header);
   state.columns[index].hidden = !state.columns[index].hidden;
 }
 async function clear() {
   state.modalAdd = true;
-  // state.searchPandawaForm = ''
-  // state.statusSearch = {} as { message: string; code: string }
-  // state.options = await userService.create()
-  // state.userForm = {}
-  // state.checked = false
 }
 async function updateStatus(id: number, isActive: boolean) {
   await $api(`/users/${id}`, {
@@ -130,6 +153,18 @@ async function updateStatus(id: number, isActive: boolean) {
     body: { isActive: isActive },
     onResponse() {
       refreshNuxtData("modules");
+    },
+  });
+}
+async function addUser(FormData: FormData) {
+  const formDataObj = Object.fromEntries(FormData.entries());
+  console.log(formDataObj);
+  await $api(`/users`, {
+    method: "POST",
+    body: formDataObj,
+    onResponse() {
+      refreshNuxtData("modules");
+      state.modalAdd = false;
     },
   });
 }
@@ -145,7 +180,6 @@ async function updateStatus(id: number, isActive: boolean) {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Total Users
           </p>
-          <!-- <h4 class="mb-0">{{ count.total }}</h4> -->
           <h4 class="mb-0">{{ modules?.data.count.total }}</h4>
         </template>
       </CardsSmallCard>
@@ -159,7 +193,6 @@ async function updateStatus(id: number, isActive: boolean) {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Active Users
           </p>
-          <!-- <h4 class="mb-0">{{ count.active }}</h4> -->
           <h4 class="mb-0">{{ modules?.data.count.active }}</h4>
         </template>
       </CardsSmallCard>
@@ -173,7 +206,6 @@ async function updateStatus(id: number, isActive: boolean) {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Deactive Users
           </p>
-          <!-- <h4 class="mb-0">{{ count.inactive }}</h4> -->
           <h4 class="mb-0">{{ modules?.data.count.inactive }}</h4>
         </template>
       </CardsSmallCard>
@@ -213,7 +245,12 @@ async function updateStatus(id: number, isActive: boolean) {
             {{ toggle.label }}
           </div>
         </div>
-        <button class="btn btn-primary btn-sm m-1" @click="clear" type="button">
+        <button
+          v-if="checkAdminRole()"
+          class="btn btn-primary btn-sm m-1"
+          @click="clear"
+          type="button"
+        >
           <!-- v-if="checkRole('user.users', 'create')" -->
           <i class="ri-add-circle-line align-bottom me-1"></i>Add User
         </button>
@@ -225,11 +262,6 @@ async function updateStatus(id: number, isActive: boolean) {
         :data-table="modules.data.users"
         :column="state.columns"
       >
-      <!-- <DatatablesDatatableClient
-        v-if="users"
-        :data-table="users"
-        :column="state.columns"
-      > -->
         <template #column-isActive="{ item }">
           <div
             class="form-check form-switch switch-custom form-switch-success text-center"
@@ -250,6 +282,17 @@ async function updateStatus(id: number, isActive: boolean) {
     :title="'Create User'"
     @toggle="state.modalAdd = $event"
   >
-    <template #modalBody> Test </template>
+    <template #modalBody>
+      <Vueform
+        :endpoint="false"
+        :display-errors="false"
+        :schema="schema"
+        @submit="
+          async (form$: any, FormData: FormData) => {
+            addUser(FormData);
+          }
+        "
+      ></Vueform>
+    </template>
   </ModalsModalBasic>
 </template>
