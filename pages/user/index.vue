@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import Swal from "sweetalert2";
 import type { User } from "~/interfaces/user";
 import type { Column } from "~/interfaces/utils";
+// import img from "~/assets/images/logo.png";
 useHead({
   title: "User List",
 });
@@ -20,6 +22,11 @@ const state = reactive({
       label: "Name User",
       sortable: true,
       filterable: true,
+      custom: {
+        image: 'imageUrl',
+        routeName: 'user-detail',
+        params: 'id'
+      }
     },
     {
       name: "username",
@@ -50,10 +57,11 @@ const state = reactive({
       filterable: true,
     },
     {
-      name: "phone",
+      name: "addresses",
       label: "Alamat User",
       sortable: true,
       filterable: true,
+      customizeRow: true,
     },
     {
       name: "role",
@@ -132,14 +140,14 @@ const schema = {
   },
 };
 const { $api } = useNuxtApp();
-const { data: modules } = await useAsyncData<{
+const { data: users } = await useAsyncData<{
   data: {
     users: User[];
     count: { active: number; inactive: number; total: number };
   };
   message: string;
   statusCode: number;
-}>("modules", () => $api("/users"));
+}>("users", () => $api("/users"));
 function toggleHeader(header: string) {
   let index = state.columns.findIndex((col) => col.label === header);
   state.columns[index].hidden = !state.columns[index].hidden;
@@ -147,14 +155,40 @@ function toggleHeader(header: string) {
 async function clear() {
   state.modalAdd = true;
 }
-async function updateStatus(id: number, isActive: boolean) {
-  await $api(`/users/${id}`, {
-    method: "patch",
-    body: { isActive: isActive },
-    onResponse() {
-      refreshNuxtData("modules");
-    },
-  });
+function updateStatus(id: number, name: string, isActive: boolean) {
+  try {
+    Swal.fire({
+      title: `Kamu yakin ingin ${
+        isActive ? "menonaktifkan" : "mengaktifkan"
+      } ${name}?`,
+      text: isActive
+        ? `User yang dinonaktifkan tidak dapat berbelanja di genahsehat, tetapi kamu bisa mengaktifkannya kembali kapan saja`
+        : "User yang telah diaktifkan dapat berbelanja kembali di genahsehat",
+      imageUrl: isActive
+        ? "/_nuxt/assets/images/danger-switch.png"
+        : "/_nuxt/assets/images/warning-switch.png",
+      showCancelButton: true,
+      confirmButtonText: "Konfirmasi",
+      cancelButtonText: "Batal",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await $api(`/users/${id}`, {
+          method: "patch",
+          body: { isActive: isActive },
+          onResponse() {
+            refreshNuxtData("users");
+          },
+        });
+
+      }
+      if (result.isDismissed) {
+        const user = users.value?.data?.users?.find((user) => user.id === id);
+        if (user) {
+          user.isActive = !isActive;
+        }
+      }
+    });
+  } catch (error) {}
 }
 async function addUser(FormData: FormData) {
   const formDataObj = Object.fromEntries(FormData.entries());
@@ -163,7 +197,7 @@ async function addUser(FormData: FormData) {
     method: "POST",
     body: formDataObj,
     onResponse() {
-      refreshNuxtData("modules");
+      refreshNuxtData("users");
       state.modalAdd = false;
     },
   });
@@ -180,7 +214,7 @@ async function addUser(FormData: FormData) {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Total Users
           </p>
-          <h4 class="mb-0">{{ modules?.data.count.total }}</h4>
+          <h4 class="mb-0">{{ users?.data.count.total }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -193,7 +227,7 @@ async function addUser(FormData: FormData) {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Active Users
           </p>
-          <h4 class="mb-0">{{ modules?.data.count.active }}</h4>
+          <h4 class="mb-0">{{ users?.data.count.active }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -206,7 +240,7 @@ async function addUser(FormData: FormData) {
           <p class="text-uppercase fw-semibold fs-12 text-muted mb-1">
             Deactive Users
           </p>
-          <h4 class="mb-0">{{ modules?.data.count.inactive }}</h4>
+          <h4 class="mb-0">{{ users?.data.count.inactive }}</h4>
         </template>
       </CardsSmallCard>
     </div>
@@ -258,8 +292,8 @@ async function addUser(FormData: FormData) {
     </template>
     <template #cardBody>
       <DatatablesDatatableClient
-        v-if="modules?.data.users"
-        :data-table="modules.data.users"
+        v-if="users?.data.users"
+        :data-table="users.data.users"
         :column="state.columns"
       >
         <template #column-isActive="{ item }">
@@ -271,10 +305,21 @@ async function addUser(FormData: FormData) {
               type="checkbox"
               role="switch"
               v-model="item.isActive"
-              @change="updateStatus(item.id, item.isActive)"
+              @change="updateStatus(item.id, item.displayName, item.isActive)"
             />
-          </div> </template
-      ></DatatablesDatatableClient>
+          </div>
+        </template>
+        <template #column-addresses="{ item }">
+          <div v-for="(address, index) in item.addresses" :key="index">
+            <template v-if="address.isMain">
+              <p class="mb-0">{{ address.details }}</p>
+              <p class="mb-0">{{ address.regency }}</p>
+              <p class="mb-0">{{ address.province }}</p>
+              <p class="mb-0">{{ address.postCode }}</p>
+            </template>
+          </div>
+        </template>
+      </DatatablesDatatableClient>
     </template>
   </CardsBaseCard>
   <ModalsModalBasic

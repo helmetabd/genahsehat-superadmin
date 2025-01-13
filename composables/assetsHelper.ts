@@ -8,12 +8,8 @@ export const getAvatar = (avatar: string | null | undefined) => {
     avatar == "default"
   ) {
     return logoAvatar;
-  }
-  const asset_url = import.meta.env.VITE_APP_ASSET_URL;
-  if (asset_url[0] != "/") {
-    return `${asset_url}/${avatar}`;
   } else {
-    return asset_url + avatar;
+    return avatar;
   }
 };
 

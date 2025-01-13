@@ -1,4 +1,4 @@
-import type { FormField, Option } from "./Utils";
+import type { FormField, Option } from "./utils";
 
 export interface User {
   id: number;

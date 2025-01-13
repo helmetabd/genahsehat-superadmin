@@ -6,7 +6,7 @@ export interface ButtonConfig {
 
 export interface Option {
   label: string | number
-  value: number
+  value: number | string | boolean
   department?: number
 }
 

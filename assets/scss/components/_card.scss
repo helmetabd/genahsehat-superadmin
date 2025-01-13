@@ -151,3 +151,16 @@ $value in $theme-colors {
         }
     }
 }
+
+.card-detail {
+    background-color: #fff;
+    .card-header {
+        background-color: #fff;
+    }
+    // .card-body {
+    //     padding: 0;
+    // }
+    // .card-footer {
+    //     border-top: 1px solid var(--#{$prefix}border-color);
+    // }
+}
