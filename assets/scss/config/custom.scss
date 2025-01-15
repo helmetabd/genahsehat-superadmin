@@ -836,6 +836,29 @@ table.dataTable>tbody>tr.child ul.dtr-details>li {
   .form-control {
     border-color: $input-color !important;
   }
+
+  .card-detail {
+    // background-color: #061f3b;
+    // background-color: #2a4562;
+    // background-color: #092748;
+    background-color: #041324;
+    // background-color: rgb(29.1, 42.6, 57.9);
+    
+    .card-header {
+      background-color: #041324;
+      // background-color: rgb(29.1, 42.6, 57.9);
+      // background-color: #092748;
+      // background-color: #2a4562;
+      // background-color: #061f3b;
+    }
+
+    // .card-body {
+    //     padding: 0;
+    // }
+    // .card-footer {
+    //     border-top: 1px solid var(--#{$prefix}border-color);
+    // }
+  }
 }
 
 // .switch-custom:focus~.custom-control-label::before {

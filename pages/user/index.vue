@@ -159,12 +159,12 @@ function updateStatus(id: number, name: string, isActive: boolean) {
   try {
     Swal.fire({
       title: `Kamu yakin ingin ${
-        isActive ? "menonaktifkan" : "mengaktifkan"
+        !isActive ? "menonaktifkan" : "mengaktifkan"
       } ${name}?`,
-      text: isActive
+      text: !isActive
         ? `User yang dinonaktifkan tidak dapat berbelanja di genahsehat, tetapi kamu bisa mengaktifkannya kembali kapan saja`
         : "User yang telah diaktifkan dapat berbelanja kembali di genahsehat",
-      imageUrl: isActive
+      imageUrl: !isActive
         ? "/_nuxt/assets/images/danger-switch.png"
         : "/_nuxt/assets/images/warning-switch.png",
       showCancelButton: true,

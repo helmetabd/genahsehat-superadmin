@@ -44,6 +44,7 @@ export default defineNuxtConfig({
   modules: [
     "@pinia/nuxt",
     "@vueform/nuxt",
+    '@vee-validate/nuxt',
     "pinia-plugin-persistedstate/nuxt",
     "nuxt-particles",
     "nuxt-auth-utils",

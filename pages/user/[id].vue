@@ -2,8 +2,9 @@
 definePageMeta({
   name: "user-detail",
 });
-import type { State, User } from "~/interfaces/user";
+import type { State, User, UserForm } from "~/interfaces/user";
 import type { FormField, Option } from "~/interfaces/utils";
+import PasswordToggleElement from "../../components/partials/customPasswordField.vue";
 
 const router = useRoute();
 const { $api } = useNuxtApp();
@@ -11,8 +12,10 @@ const { $api } = useNuxtApp();
 const state = reactive({
   user: {} as User,
   userId: router.params.id,
-  userProfileFormField: {} as FormField,
+  userProfileFormField: {} as UserForm,
+  userPasswordForm: {} as { password: string },
   profileModal: false,
+  passwordModal: false,
   checked: false,
   editParams: {
     status: [
@@ -24,181 +27,40 @@ const state = reactive({
       { label: "Store Owner", value: "store-owner" },
       { label: "User", value: "user" },
     ] as Option[],
-  }
-  // schema: {
-  //   role: {
-  //     type: "select",
-  //     label: "Role",
-  //     placeholder: "Select Role",
-  //     fieldName: "Role",
-  //     rules: ["required"],
-  //     options: [
-  //       { label: "Super Admin", value: "superadmin" },
-  //       { label: "Store Owner", value: "store-owner" },
-  //       { label: "User", value: "user" },
-  //     ],
-  //   },
-  //   displayName: {
-  //     type: "text",
-  //     label: "Name User",
-  //     placeholder: "Name User",
-  //     fieldName: "Name User",
-  //     rules: ["required"],
-  //   },
-  //   username: {
-  //     type: "text",
-  //     label: "Username",
-  //     placeholder: "Username",
-  //     fieldName: "Username",
-  //     rules: ["required"],
-  //   },
-  //   email: {
-  //     type: "text",
-  //     inputType: "email",
-  //     label: "Email",
-  //     rules: ["required", "max:255", "email"],
-  //     placeholder: "Email",
-  //     fieldName: "Email",
-  //     description: "You will receive a confirmation letter to this email.",
-  //   },
-  //   phone: {
-  //     type: "phone",
-  //     label: "Phone",
-  //     placeholder: "Phone",
-  //     rules: ["required"],
-  //     fieldName: "Phone",
-  //     allowIncomplete: true,
-  //     unmask: true,
-  //   },
-  //   password: {
-  //     type: "text",
-  //     inputType: "password",
-  //     label: "Password",
-  //     rules: ["required", "min:8", "same:password_confirmation"],
-  //     fieldName: "Password",
-  //     placeholder: "Password",
-  //   },
-  //   password_confirmation: {
-  //     type: "text",
-  //     inputType: "password",
-  //     label: "Password confirmation",
-  //     rules: ["required"],
-  //     fieldName: "Password confirmation",
-  //     placeholder: "Password again",
-  //     submit: false,
-  //   },
-  //   isActive: {
-  //     type: "select",
-  //     label: "Status",
-  //     placeholder: "Select Status",
-  //     fieldName: "Status",
-  //     rules: ["required"],
-  //     options: [
-  //       { label: "Active", value: true },
-  //       { label: "Not Active", value: false },
-  //     ],
-  //   },
-  //   checkbox: {
-  //     type: "checkbox",
-  //     text: "Confirm",
-  //     submit: false,
-  //   },
-  //   register: {
-  //     align: "right",
-  //     type: "button",
-  //     submits: true,
-  //     disabled: [["checkbox", "==", true]],
-  //     buttonLabel: "Update User",
-  //   },
-  // },
+  },
+  showPassword: false,
+  showPasswordConfirmation: false,
 });
 
-const schema = {
-  role: {
-    type: "select",
-    label: "Role",
-    placeholder: "Select Role",
-    fieldName: "Role",
-    rules: ["required"],
-    items: [
-      { label: "Super Admin", value: "superadmin" },
-      { label: "Store Owner", value: "store-owner" },
-      { label: "User", value: "user" },
-    ],
-  },
-  displayName: {
-    type: "text",
-    label: "Name User",
-    placeholder: "Name User",
-    fieldName: "Name User",
-    rules: ["required"],
-  },
-  username: {
-    type: "text",
-    label: "Username",
-    placeholder: "Username",
-    fieldName: "Username",
-    rules: ["required"],
-  },
-  email: {
-    type: "text",
-    inputType: "email",
-    label: "Email",
-    rules: ["required", "max:255", "email"],
-    placeholder: "Email",
-    fieldName: "Email",
-    description: "You will receive a confirmation letter to this email.",
-  },
-  phone: {
-    type: "phone",
-    label: "Phone",
-    placeholder: "Phone",
-    rules: ["required"],
-    fieldName: "Phone",
-    allowIncomplete: true,
-    unmask: true,
-  },
-  password: {
-    type: "text",
-    inputType: "password",
-    label: "Password",
-    rules: ["required", "min:8", "same:password_confirmation"],
-    fieldName: "Password",
-    placeholder: "Password",
-  },
-  password_confirmation: {
-    type: "text",
-    inputType: "password",
-    label: "Password confirmation",
-    rules: ["required"],
-    fieldName: "Password confirmation",
-    placeholder: "Password again",
-    submit: false,
-  },
-  isActive: {
-    type: "select",
-    label: "Status",
-    placeholder: "Select Status",
-    fieldName: "Status",
-    rules: ["required"],
-    items: [
-      { label: "Active", value: true },
-      { label: "Not Active", value: false },
-    ],
-  },
-  checkbox: {
-    type: "checkbox",
-    text: "Confirm",
-    submit: false,
-  },
-  register: {
-    align: "right",
-    type: "button",
-    submits: true,
-    disabled: [["checkbox", "==", true]],
-    buttonLabel: "Update User",
-  },
-};
+import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
+
+// Validation schema using Yup
+const validationSchema = yup.object({
+  role: yup.string().required("Role is required"),
+  displayName: yup.string().required("Name is required"),
+  username: yup.string().required("Username is required"),
+  email: yup.string().email("Invalid email").required("Email is required"),
+  phone: yup
+    .string()
+    .matches(
+      /^(?:\+62|62|0)8[1-9][0-9]{7,10}$/,
+      "Invalid Indonesian phone number format"
+    )
+    .required("Phone number is required"),
+  isActive: yup.string().required("Status is required"),
+  // confirm: yup.boolean().oneOf([true], "You must confirm before submitting"),
+});
+const validationPasswordSchema = yup.object({
+  password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .required("Password is required"),
+  password_confirmation: yup
+    .string()
+    .oneOf([yup.ref("password")], "Passwords must match")
+    .required("Password confirmation is required"),
+});
 
 await useAsyncData<{
   data: User;
@@ -212,24 +74,18 @@ await useAsyncData<{
   })
 );
 
-// async function goToCreator(creatorId: number) {
-//   user = await userService.detail(creatorId);
-//   // this.fetchLogs(creatorId);
-// }
-
-// const fetchstate = async () => {
-//   try {
-//     user = await userService.detail(Number(userId));
-//   } catch (error: any) {
-//     Swal.fire("error", error.response.message, "error");
-//   }
-// };
-
-async function onSubmit(FormData: FormData) {
-  const formDataObj = Object.fromEntries(FormData.entries());
+async function onSubmit(values: Record<string, any>) {
+  const { confirm, ...rest } = values;
+  let formDataObj = rest;
+  if (values.password_confirmation) {
+    const { password_confirmation, ...object } = formDataObj;
+    formDataObj = object
+  }
+  if(values.phone){
+    formDataObj.phone = convertPhoneNumber(formDataObj.phone)
+  }
   console.log(formDataObj);
-  await $api(`/users`, {
-    params: { id: router.params.id },
+  await $api(`/users/${router.params.id}`, {
     method: "PATCH",
     body: formDataObj,
     onResponse() {
@@ -241,16 +97,20 @@ async function onSubmit(FormData: FormData) {
 
 async function toggleProfileModal() {
   try {
-    // const res = await userService.edit(Number(router.params.id));
-    // const { data: user, params: params } = res;
-    // state.editParams = params;
-    // state.inputProfile.forEach((element) => {
-    //   userProfileFormField[element.name as keyof FormField] = user[
-    //     element.name as keyof User
-    //   ] as string | number;
-    // });
-    // userProfileFormField.role = user.role_id;
-    // userProfileFormField.status = user.status;
+    const {
+      id,
+      isEmailVerified,
+      isPhoneVerified,
+      image,
+      purchaseCounts,
+      gsPoints,
+      hasStore,
+      createdAt,
+      updatedAt,
+      imageUrl,
+      ...dataUser
+    } = state.user;
+    state.userProfileFormField = dataUser;
     state.profileModal = true;
   } catch (error: any) {
     responseHelper("error", error);
@@ -298,9 +158,7 @@ const avatar = (avatar: string | null | undefined) => getAvatar(avatar);
       tableCard
       noFooter
     >
-      <template #titleIcon>
-        <i class="las la-user"></i>
-      </template>
+      <template #titleIcon> <i class="las la-user"></i> </template>54
       <template #cardButton>
         <div class="btn-group" v-if="checkAdminRole()">
           <button
@@ -311,18 +169,14 @@ const avatar = (avatar: string | null | undefined) => getAvatar(avatar);
             <i class="ri-user-settings-line align-bottom me-1"></i>
             Edit Profile
           </button>
-
-          <!-- <NuxtLink
-              :to="{ name: 'user.privileges', params: { id: userId } }"
-              class="btn btn-sm btn-success m-1"
-            >
-              <i class="ri-shield-user-line align-bottom me-1"></i>
-              Edit Privileges
-            </NuxtLink> -->
-          <!-- <button class="btn btn-sm btn-info m-1" @click="fixPrivilege()">
-              <i class="bx bx-wrench align-middle me-1"></i>
-              Fix Privilege
-            </button> -->
+          <button
+            type="button"
+            class="btn btn-sm btn-info m-1"
+            @click="state.passwordModal = true"
+          >
+            <i class="ri-user-settings-line align-bottom me-1"></i>
+            Edit Password
+          </button>
         </div>
       </template>
       <template #cardBody>
@@ -398,9 +252,9 @@ const avatar = (avatar: string | null | undefined) => getAvatar(avatar);
                 <ol class="breadcrumb text-uppercase mb-0 pt-1">
                   <li class="breadcrumb-item">
                     <i class="las la-map-marker me-1 text-muted"></i>
-                    <router-link :to="{ name: 'user' }" class="text-info">
+                    <NuxtLink :to="{ name: 'user' }" class="text-info">
                       <strong>Users</strong>
-                    </router-link>
+                    </NuxtLink>
                   </li>
                   <li
                     class="breadcrumb-item active hide-xs"
@@ -423,17 +277,212 @@ const avatar = (avatar: string | null | undefined) => getAvatar(avatar);
     @toggle="state.profileModal = $event"
   >
     <template #modalBody>
-      <Vueform sync
-        v-model="state.user"
-        :endpoint="false"
-        :display-errors="false"
-        :schema="schema"
-        @submit="
-          async (form$: any, FormData: FormData) => {
-            onSubmit(FormData);
-          }
-        "
-      ></Vueform>
+      <Form
+        @submit="onSubmit"
+        class="needs-validation"
+        :validation-schema="validationSchema"
+        :initial-values="state.userProfileFormField"
+        v-slot="{ errors, values }"
+      >
+        <!-- Role -->
+        <div class="mb-3">
+          <label for="role" class="form-label">Role</label>
+          <Field as="select" name="role" id="role" class="form-select">
+            <option value="" disabled>Select Role</option>
+            <option
+              v-for="option in state.editParams.role"
+              :value="option.value"
+            >
+              {{ option.label }}
+            </option>
+          </Field>
+          <ErrorMessage name="role" class="text-danger" />
+        </div>
+
+        <!-- Name -->
+        <div class="mb-3">
+          <label for="displayName" class="form-label">Name User</label>
+          <Field
+            name="displayName"
+            id="displayName"
+            class="form-control"
+            placeholder="Name User"
+          />
+          <ErrorMessage name="displayName" class="text-danger" />
+        </div>
+
+        <!-- Username -->
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <Field
+            name="username"
+            id="username"
+            class="form-control"
+            placeholder="Username"
+          />
+          <ErrorMessage name="username" class="text-danger" />
+        </div>
+
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <Field
+            name="email"
+            id="email"
+            type="email"
+            class="form-control"
+            placeholder="Email"
+          />
+          <ErrorMessage name="email" class="text-danger" />
+          <div class="form-text">
+            You will receive a confirmation letter to this email.
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="mb-3">
+          <label for="phone" class="form-label">Phone</label>
+          <Field
+            name="phone"
+            id="phone"
+            class="form-control"
+            placeholder="Phone"
+          />
+          <ErrorMessage name="phone" class="text-danger" />
+        </div>
+
+        <!-- Status -->
+        <div class="mb-3">
+          <label for="isActive" class="form-label">Status</label>
+          <Field as="select" name="isActive" id="isActive" class="form-select">
+            <option value="" disabled>Select Status</option>
+            <option value="true">Active</option>
+            <option value="false">Not Active</option>
+          </Field>
+          <ErrorMessage name="isActive" class="text-danger" />
+        </div>
+
+        <!-- Confirm & Button -->
+        <div class="row mx-0">
+          <div class="form-check col-6">
+            <!-- Confirm -->
+            <Field
+              name="confirm"
+              id="confirm"
+              type="checkbox"
+              class="form-check-input"
+              :unchecked-value="false"
+              value="true"
+            />
+            <!-- standalone -->
+            <!-- v-model="state.checked" -->
+            <label class="form-check-label" for="confirm"> Confirm </label>
+          </div>
+          <div class="col-6 pe-0">
+            <div class="hstack justify-content-end">
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                :disabled="!values.confirm"
+                class="btn btn-primary"
+              >
+                Update User
+              </button>
+            </div>
+          </div>
+        </div>
+      </Form>
+    </template>
+  </ModalsModalBasic>
+  <ModalsModalBasic
+    title="Update Password"
+    :modelValue="state.passwordModal"
+    @toggle="state.passwordModal = $event"
+  >
+    <template #modalBody>
+      <Form
+        @submit="onSubmit"
+        class="needs-validation"
+        :validation-schema="validationPasswordSchema"
+        :initial-values="state.userPasswordForm"
+        v-slot="{ errors, values }"
+      >
+        <!-- Password -->
+        <div class="position-relative auth-pass-inputgroup mb-3">
+          <label for="password" class="form-label">Password</label>
+          <Field
+            name="password"
+            id="password"
+            :type="state.showPassword ? 'text' : 'password'"
+            class="form-control pe-5"
+            placeholder="Password"
+          />
+          <button
+            class="position-absolute end-0 text-decoration-none text-muted btn btn-link"
+            style="top: 40%"
+            type="button"
+            id="password-addon"
+            @click="state.showPassword = !state.showPassword"
+          >
+            <i class="ri-eye-fill align-middle"></i>
+          </button>
+          <ErrorMessage name="password" class="text-danger" />
+        </div>
+
+        <!-- Password Confirmation -->
+        <div class="position-relative auth-pass-inputgroup mb-3">
+          <label for="password_confirmation" class="form-label"
+            >Password Confirmation</label
+          >
+          <Field
+            name="password_confirmation"
+            id="password_confirmation"
+            :type="state.showPasswordConfirmation ? 'text' : 'password'"
+            class="form-control pe-5"
+            placeholder="Password Again"
+          />
+          <button
+            class="position-absolute end-0 text-decoration-none text-muted btn btn-link"
+            style="top: 40%"
+            type="button"
+            id="password-addon"
+            @click="
+              state.showPasswordConfirmation = !state.showPasswordConfirmation
+            "
+          >
+            <i class="ri-eye-fill align-middle"></i>
+          </button>
+          <ErrorMessage name="password_confirmation" class="text-danger" />
+        </div>
+        <div class="row mx-0">
+          <div class="form-check col-6">
+            <!-- Confirm -->
+            <Field
+              name="confirm"
+              id="confirm"
+              type="checkbox"
+              class="form-check-input"
+              :unchecked-value="false"
+              value="true"
+            />
+            <!-- standalone -->
+            <!-- v-model="state.checked" -->
+            <label class="form-check-label" for="confirm"> Confirm </label>
+          </div>
+          <div class="col-6 pe-0">
+            <div class="hstack justify-content-end">
+              <!-- Submit Button -->
+              <button
+                type="submit"
+                :disabled="!values.confirm"
+                class="btn btn-primary"
+              >
+                Update Password
+              </button>
+            </div>
+          </div>
+        </div>
+      </Form>
     </template>
   </ModalsModalBasic>
 </template>
